@@ -144,21 +144,11 @@
                                 <!-- Heading -->
                                 <div class="position-relative">
                                     <a href="{{i.get_absolute_url}}" class="d-block stretched-link">
-                                        <h4 class="line-clamp-2 mb-2">{{i.title}}</h4>
+                                        <h6 class="line-clamp-2 mb-2">{{i.title}}</h6>
                                     </a>
 
                                     <div class="row mx-n2 align-items-end">
-                                        <div class="col px-2">
-                                            <ul class="nav mx-n3">
-                                                <li class="nav-item px-3">
-                                                    {% if price.discount %}
-                                                    <div class="d-flex align-items-center">
-                                                        <del class="font-size-sm">₹{{price.total_price}}</del>
-                                                    </div>
-                                                    {% endif %}
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        
 
                                         <hr>
 
@@ -166,16 +156,16 @@
                                         <div class="pricing d-flex justify-content-between align-items-center">
                                             {% if max_discount > 0 %}
                                                 <!-- Left Side (Original Price) -->
-                                                <del class="fw-bold" style="color:#e63946; font-size:1rem; margin:0;">
+                                                <del class="fw-semibold" style="color:#e63946; font-size:1rem; margin:0;">
                                                     ₹{{ monthly|format_price }}
                                                 </del>
 
                                                 <!-- Right Side (Discounted Price + Badge) -->
                                                 <div class="d-flex align-items-center" style="gap:10px;">
-                                                    <span class="fw-bold h5" style="color:#000; margin:0;">
+                                                    <span class="fw-semibold h5" style="color:#000; margin:0;">
                                                         ₹{{ discounted|format_price }}/mo
                                                     </span>
-                                                    <span class="badge px-3 py-2" style="background-color:#28a745; color:#fff; font-size:0.9rem; margin:0;">
+                                                    <span class="badge px-3 py-2" style="background-color:#28a745; color:#fff; font-size:0.8rem; margin:0;">
                                                         SAVE {{ max_discount }}%
                                                     </span>
                                                 </div>
@@ -187,9 +177,9 @@
                                         </div>
                                         {% endwith %}
 
-                                        <div class="text-center px-3 mb-4 mt-4">
+                                        <div class="text-center px-3 mb-1 mt-1">
                                         <a href="{{ product.get_absolute_url }}"
-                                            class="btn w-100 fw-bold stylish-btn">
+                                            class="btn w-100 fw-semibold stylish-btn">
                                             BUY NOW
                                         </a>
                                         </div>
@@ -238,43 +228,44 @@
                         </a>
                         <div class="position-relative">
                             <a href="{{i.get_absolute_url}}" class="d-block stretched-link">
-                                <h4 class="line-clamp-2 mb-2">{{i.title}}</h4>
+                                <h6 class="line-clamp-2 mb-2">{{i.title}}</h6>
+
                             </a>
 
                             <hr style="width: 100%;">
 
                             {% with monthly=i.best_monthly_price.0 discounted=i.best_monthly_price.1 max_discount=i.best_monthly_price.2 %}
-                                        <div class="pricing d-flex justify-content-between align-items-center">
-                                            {% if max_discount > 0 %}
-                                                <!-- Left Side (Original Price) -->
-                                                <del class="fw-bold" style="color:#e63946; font-size:1rem; margin:0;">
-                                                    ₹{{ monthly|format_price }}
-                                                </del>
+                            <div class="pricing d-flex justify-content-between align-items-center">
+                                {% if max_discount > 0 %}
+                                    <!-- Left Side (Original Price) -->
+                                    <del class="fw-semibold" style="color:#e63946; font-size:1rem; margin:0;">
+                                        ₹{{ monthly|format_price }}
+                                    </del>
 
-                                                <!-- Right Side (Discounted Price + Badge) -->
-                                                <div class="d-flex align-items-center" style="gap:10px;">
-                                                    <span class="fw-bold h5" style="color:#000; margin:0;">
-                                                        ₹{{ discounted|format_price }}/mo
-                                                    </span>
-                                                    <span class="badge px-3 py-2" style="background-color:#28a745; color:#fff; font-size:0.9rem; margin:0;">
-                                                        SAVE {{ max_discount }}%
-                                                    </span>
-                                                </div>
-                                            {% else %}
-                                                <span class="fw-bold h5" style="color:#000; margin:0;">
-                                                    ₹ {{ monthly|format_price }}/mo
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                        {% endwith %}
+                                    <!-- Right Side (Discounted Price + Badge) -->
+                                    <div class="d-flex align-items-center" style="gap:10px;">
+                                        <span class="fw-semibold h5" style="color:#000; margin:0;">
+                                            ₹{{ discounted|format_price }}/mo
+                                        </span>
+                                        <span class="badge px-3 py-2" style="background-color:#28a745; color:#fff; font-size:0.9rem; margin:0;">
+                                            SAVE {{ max_discount }}%
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    <span class="fw-bold h5" style="color:#000; margin:0;">
+                                        ₹ {{ monthly|format_price }}/mo
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% endwith %}
 
-                      <!-- Button -->
-            <div class="text-center px-3 mb-4 mt-4">
-            <a href="{{ product.get_absolute_url }}"
-                class="btn w-100 fw-bold stylish-btn">
-                BUY NOW
-            </a>
-            </div>
+                                <!-- Button -->
+                            <div class="text-center px-3 mb-4 mt-4">
+                            <a href="{{ product.get_absolute_url }}"
+                                class="btn w-100 fw-bold stylish-btn">
+                                BUY NOW
+                            </a>
+                            </div>
 
             <style>
             .stylish-btn {
