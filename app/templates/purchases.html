@@ -1,0 +1,8 @@
+<h1>My Purchases</h1>
+<ul>
+  {% for p in purchases %}
+    <li>{{ p.product.title }} - ₹{{ p.final_price }} ({{ p.created_at|date:"M d, Y" }})</li>
+  {% empty %}
+    <li>No purchases yet.</li>
+  {% endfor %}
+</ul>

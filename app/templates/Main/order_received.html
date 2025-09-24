@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% load course_tags %}	
+
+
+{% block content %}
+
+<body class="bg-white woocommerce-order-received">
+
+
+    <!-- SHOP ORDER COMPLETED
+    ================================================== -->
+    <div class="container py-8 py-lg-11">
+        <div class="row">
+            <div class="col-xl-8 mx-xl-auto">
+                <header class="entry-header">
+                    <h1 class="entry-title">Order received</h1>
+                </header>
+
+                <div class="entry-content">
+                    <div class="woocommerce">
+                        <div class="woocommerce-order">
+                            <p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">Thank you. Your order has been received.</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+{% endblock content %}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 flex">
+
+  <!-- Left Sidebar -->
+  <aside class="w-64 bg-gray-900 text-white min-h-screen flex flex-col">
+    <div class="p-6 border-b border-gray-700">
+      <h1 class="text-2xl font-bold">🚀 CloudHost</h1>
+      <p class="text-sm text-gray-400">User Dashboard</p>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2">
+      <a href="{% url 'dashboard' %}" class="block px-4 py-2 rounded hover:bg-gray-700">📊 Dashboard</a>
+      <a href="{% url 'profile' %}" class="block px-4 py-2 rounded bg-gray-700">👤 Profile</a>
+      <a href="{% url 'purchases' %}" class="block px-4 py-2 rounded hover:bg-gray-700">🛒 Purchases</a>
+      <a href="#" class="block px-4 py-2 rounded hover:bg-gray-700">⚙️ Settings</a>
+      <a href="{% url 'logout' %}" class="block px-4 py-2 rounded hover:bg-red-600">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Right Content -->
+  <div class="flex-1">
+    <!-- Top Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+      <h2 class="text-xl font-semibold">User Profile</h2>
+      <div class="flex items-center gap-4">
+        <span class="text-gray-600">{{ user.username }}</span>
+        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random&color=fff" 
+             class="w-10 h-10 rounded-full border">
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-6">
+      <!-- Profile Card -->
+      <div class="bg-white rounded-xl shadow p-6 flex items-center gap-6 mb-6">
+        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random&color=fff"
+             class="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg">
+        <div>
+          <h1 class="text-2xl font-bold">{{ user.get_full_name|default:user.username }}</h1>
+          <p class="text-gray-500">{{ user.email }}</p>
+          <span class="mt-2 inline-block bg-green-500 text-white text-xs px-3 py-1 rounded-full">Active</span>
+          <p class="text-sm text-gray-400 mt-2">Joined: {{ user.date_joined|date:"M d, Y" }}</p>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="bg-white rounded-xl shadow p-6">
+        <div class="border-b mb-4 flex gap-6">
+          <button onclick="showTab('about')" id="tab-about" 
+                  class="pb-2 border-b-2 border-blue-600 text-blue-600 font-semibold">About</button>
+          <button onclick="showTab('purchases')" id="tab-purchases" 
+                  class="pb-2 text-gray-600 hover:text-blue-600">Purchases</button>
+          <button onclick="showTab('edit')" id="tab-edit" 
+                  class="pb-2 text-gray-600 hover:text-blue-600">Edit Profile</button>
+        </div>
+
+        <!-- About Info -->
+        <div id="about" class="tab-content">
+          <h2 class="text-xl font-semibold mb-4">👤 About User</h2>
+          <ul class="space-y-3 text-gray-700">
+            <li><b>Username:</b> {{ user.username }}</li>
+            <li><b>Email:</b> {{ user.email }}</li>
+            <li><b>Joined:</b> {{ user.date_joined|date:"M d, Y H:i" }}</li>
+            <li><b>Status:</b> Active</li>
+          </ul>
+        </div>
+
+        <!-- Purchases -->
+        <div id="purchases" class="tab-content hidden">
+          <h2 class="text-xl font-semibold mb-4">🛒 Recent Purchases</h2>
+          <table class="w-full border">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="p-3 text-left">Product</th>
+                <th class="p-3 text-left">Region</th>
+                <th class="p-3 text-left">Duration</th>
+                <th class="p-3 text-left">Amount</th>
+                <th class="p-3 text-left">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for purchase in purchases %}
+              <tr class="border-t hover:bg-gray-50">
+                <td class="p-3">{{ purchase.product.title }}</td>
+                <td class="p-3">{{ purchase.region }}</td>
+                <td class="p-3">{{ purchase.duration }}</td>
+                <td class="p-3 font-bold text-green-600">₹{{ purchase.final_price }}</td>
+                <td class="p-3">{{ purchase.created_at|date:"M d, Y" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">No purchases yet.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Edit Profile -->
+        <div id="edit" class="tab-content hidden">
+          <h2 class="text-xl font-semibold mb-4">✏️ Edit Profile</h2>
+          <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+              <label class="block text-sm">Full Name</label>
+              <input type="text" name="name" value="{{ user.get_full_name }}" 
+                     class="w-full border rounded px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm">Email</label>
+              <input type="email" name="email" value="{{ user.email }}" 
+                     class="w-full border rounded px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm">Password</label>
+              <input type="password" name="password" placeholder="•••••••" 
+                     class="w-full border rounded px-3 py-2">
+            </div>
+            <button type="submit" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+              Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('button[id^="tab-"]').forEach(el => {
+        el.classList.remove('text-blue-600','border-blue-600','font-semibold');
+        el.classList.add('text-gray-600');
+      });
+      document.getElementById(tab).classList.remove('hidden');
+      document.getElementById("tab-" + tab).classList.add('text-blue-600','border-b-2','border-blue-600','font-semibold');
+    }
+  </script>
+
+</body>
+</html>

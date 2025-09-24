@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ product.title }} - Hosting Plans</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <div class="max-w-6xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- LEFT: Hosting Tenure (dynamic) -->
+    <div class="md:col-span-2 bg-white shadow rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">CHOOSE HOSTING TENURE</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for price in product.prices.all %}
+        <label class="flex items-center justify-between border p-3 rounded cursor-pointer hover:shadow">
+          
+          <!-- Radio -->
+          <input type="radio" name="plan"
+                 data-region="{{ price.region.name }}"
+                 data-duration="{{ price.duration.name }}"
+                 data-monthly="{{ price.monthly }}"
+                 data-discount="{{ price.discount|default:0 }}"
+                 data-final="{{ price.discounted_price }}"
+                 class="mr-3">
+
+          <!-- Region Logo + Details -->
+          <div class="flex items-center gap-3">
+            {% if price.region.logo %}
+            <img src="{{ price.region.logo.url }}" 
+                 alt="{{ price.region.name }}" 
+                 class="w-14 h-14 rounded-full border mr-[20px]">
+            {% endif %}
+            <div>
+              <p class="font-medium">{{ price.region.name }} — {{ price.duration.name }}</p>
+              <p class="text-sm text-gray-500">Monthly: ₹{{ price.monthly }}</p>
+            </div>
+          </div>
+
+          <!-- Pricing -->
+          <div class="text-right">
+            <p class="font-bold text-green-600">₹{{ price.discounted_price }}</p>
+            {% if price.discount %}
+            <p class="text-xs text-red-600 line-through">₹{{ price.total_price }}</p>
+            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
+              SAVE {{ price.discount }}%
+            </span>
+            {% endif %}
+          </div>
+
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- RIGHT: Summary + QR Code + Payment -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Summary</h2>
+      <div id="summaryDetails" class="mb-4 text-gray-700">
+        <p>No plan selected</p>
+      </div>
+      <div class="font-bold text-lg mb-4">Subtotal: <span id="subtotal">₹0</span></div>
+
+      <!-- QR Code (hidden until plan selected) -->
+      <div id="qrcode" class="flex justify-center mb-4 hidden"></div>
+
+      <!-- UTR Input (hidden by default) -->
+      <div id="utrBox" class="hidden mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Enter UTR / Transaction ID</label>
+        <input type="text" id="utrInput" 
+               class="w-full border rounded px-3 py-2 focus:ring focus:ring-orange-200" 
+               placeholder="Enter UTR ID">
+        <button id="utrSubmit" 
+                class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+          CONFIRM PAYMENT
+        </button>
+      </div>
+
+      <!-- Pay Button -->
+      <button id="payButton" 
+              class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mt-4">
+        PAY AND CONTINUE
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const radios = document.querySelectorAll('input[name="plan"]');
+    const subtotal = document.getElementById('subtotal');
+    const summaryDetails = document.getElementById('summaryDetails');
+    const qrContainer = document.getElementById('qrcode');
+    const payButton = document.getElementById('payButton');
+    const utrBox = document.getElementById('utrBox');
+    const utrSubmit = document.getElementById('utrSubmit');
+    const utrInput = document.getElementById('utrInput');
+    let qr;
+    let selectedPlan = {};
+
+    const upiID = "googlecloudhost@uboi"; 
+    const payeeName = "Google Cloud Host";
+
+    // Step 1: On plan select
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        const region = radio.dataset.region;
+        const duration = radio.dataset.duration;
+        const monthly = parseFloat(radio.dataset.monthly);
+        const discount = parseFloat(radio.dataset.discount);
+        const finalPrice = parseFloat(radio.dataset.final);
+
+        // Store selected plan
+        selectedPlan = { region, duration, monthly, discount, finalPrice };
+
+        // Update Summary
+        summaryDetails.innerHTML = `
+          <p><b>${region}</b> Hosting — <b>${duration}</b></p>
+          <p>Monthly: ₹${monthly} | Discount: ${discount}%</p>
+        `;
+        subtotal.innerText = `₹${finalPrice.toFixed(2)}`;
+
+        // Generate QR Code
+        qrContainer.innerHTML = "";
+        const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(payeeName)}&am=${finalPrice.toFixed(2)}&cu=INR&tn=Hosting ${duration} (${region})`;
+
+        qr = new QRCode(qrContainer, {
+          text: upiLink,
+          width: 200,
+          height: 200,
+        });
+
+        qrContainer.classList.remove('hidden');
+        utrBox.classList.add('hidden');
+        payButton.classList.remove('hidden');
+        payButton.innerText = `PAY ₹${finalPrice.toFixed(2)} AND CONTINUE`;
+      });
+    });
+
+    // Step 2: On PAY click → hide QR & hide PAY button → show UTR
+    payButton.addEventListener('click', () => {
+      if (!selectedPlan.finalPrice) {
+        alert("Please select a plan first!");
+        return;
+      }
+      qrContainer.classList.add('hidden'); 
+      payButton.classList.add('hidden');   
+      utrBox.classList.remove('hidden');   
+    });
+
+    // Step 3: Confirm UTR → Save purchase and redirect
+    utrSubmit.addEventListener('click', () => {
+      const utr = utrInput.value.trim();
+      if (!utr) {
+        alert("Please enter UTR ID");
+        return;
+      }
+
+      fetch("{% url 'save_purchase' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+          product: "{{ product.id }}",
+          region: selectedPlan.region,
+          duration: selectedPlan.duration,
+          final_price: selectedPlan.finalPrice,
+          utr_id: utr
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Server response:", data);
+        if (data.success && data.redirect_url) {
+          window.location.href = data.redirect_url;  // ✅ Thank You page
+        } else {
+          alert("Error: " + (data.error || "Something went wrong"));
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("Request failed");
+      });
+    });
+  </script>
+
+</body>
+</html>

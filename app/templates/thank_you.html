@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 flex items-center justify-center h-screen">
+
+  <div class="bg-white shadow-lg rounded-lg p-8 max-w-lg text-center">
+    <h1 class="text-3xl font-bold text-green-600 mb-4">✅ Payment Successful!</h1>
+    <p class="mb-4">Thank you for purchasing <b>{{ purchase.product.title }}</b></p>
+    
+    <div class="border p-4 rounded text-left mb-4">
+      <p><b>Region:</b> {{ purchase.region }}</p>
+      <p><b>Duration:</b> {{ purchase.duration }}</p>
+      <p><b>Amount Paid:</b> ₹{{ purchase.final_price }}</p>
+      <p><b>UTR ID:</b> {{ purchase.utr_id }}</p>
+      <p><b>Date:</b> {{ purchase.created_at }}</p>
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Go to Home</a>
+  </div>
+
+</body>
+</html>

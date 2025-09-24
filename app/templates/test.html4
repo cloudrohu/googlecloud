@@ -1,0 +1,93 @@
+
+  <div class="max-w-6xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-bold mb-4">1GB memory + 1vCPU 10GB disk space for 12 Months</h1>
+    <p class="mb-6 text-gray-600">Choose your hosting plan with region, duration and discount options.</p>
+
+    <!-- Pricing Table -->
+    <div class="overflow-x-auto mb-8">
+      <table class="w-full border border-gray-200 rounded-lg shadow bg-white">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="p-3 text-left">Select</th>
+            <th class="p-3 text-left">Region</th>
+            <th class="p-3 text-left">Duration</th>
+            <th class="p-3 text-left">Monthly Price</th>
+            <th class="p-3 text-left">Total Price</th>
+            <th class="p-3 text-left">Discount %</th>
+            <th class="p-3 text-left">Final Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Example Rows -->
+          <tr class="border-t hover:bg-gray-50">
+            <td class="p-3">
+              <input type="radio" name="plan" 
+                     data-region="India" data-duration="3 Months" 
+                     data-monthly="299" data-discount="0" />
+            </td>
+            <td class="p-3">India</td>
+            <td class="p-3">3 Months</td>
+            <td class="p-3">₹299.00</td>
+            <td class="p-3">₹897.00</td>
+            <td class="p-3 text-red-600">0%</td>
+            <td class="p-3 font-bold text-green-600">₹897.00</td>
+          </tr>
+          <tr class="border-t hover:bg-gray-50">
+            <td class="p-3">
+              <input type="radio" name="plan" 
+                     data-region="India" data-duration="12 Months" 
+                     data-monthly="299" data-discount="50" />
+            </td>
+            <td class="p-3">India</td>
+            <td class="p-3">12 Months</td>
+            <td class="p-3">₹299.00</td>
+            <td class="p-3">₹3588.00</td>
+            <td class="p-3 text-red-600">50%</td>
+            <td class="p-3 font-bold text-green-600">₹1794.00</td>
+          </tr>
+          <tr class="border-t hover:bg-gray-50">
+            <td class="p-3">
+              <input type="radio" name="plan" 
+                     data-region="USA" data-duration="3 Months" 
+                     data-monthly="249" data-discount="0" />
+            </td>
+            <td class="p-3">USA</td>
+            <td class="p-3">3 Months</td>
+            <td class="p-3">₹249.00</td>
+            <td class="p-3">₹747.00</td>
+            <td class="p-3 text-red-600">0%</td>
+            <td class="p-3 font-bold text-green-600">₹747.00</td>
+          </tr>
+          <tr class="border-t hover:bg-gray-50">
+            <td class="p-3">
+              <input type="radio" name="plan" 
+                     data-region="USA" data-duration="12 Months" 
+                     data-monthly="249" data-discount="50" />
+            </td>
+            <td class="p-3">USA</td>
+            <td class="p-3">12 Months</td>
+            <td class="p-3">₹249.00</td>
+            <td class="p-3">₹2988.00</td>
+            <td class="p-3 text-red-600">50%</td>
+            <td class="p-3 font-bold text-green-600">₹1494.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Summary + QR Code -->
+    <div class="bg-white shadow rounded-lg p-6 max-w-md mx-auto">
+      <h2 class="text-xl font-semibold mb-4">Summary</h2>
+      <div id="summaryDetails" class="mb-4 text-gray-700">
+        <p>No plan selected</p>
+      </div>
+      <div class="font-bold text-lg mb-4">Subtotal: <span id="subtotal">₹0</span></div>
+
+      <!-- QR Code -->
+      <div id="qrcode" class="flex justify-center mb-4"></div>
+
+      <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded">
+        CONTINUE TO CART
+      </button>
+    </div>
+  </div>
