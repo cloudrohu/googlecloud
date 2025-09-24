@@ -344,3 +344,10 @@ def user_profile(request):
         "purchases": purchases,
         "total_spent": total_spent,
     })
+
+@login_required
+def expire_packages():
+    purchases = Purchase.objects.filter(status="PAID", expiry_date__lt=date.today())
+    for purchase in purchases:
+        purchase.status = "EXPIRED"
+        purchase.save()

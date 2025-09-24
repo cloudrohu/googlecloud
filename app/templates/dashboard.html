@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -14,21 +13,21 @@
   <div class="flex h-screen">
 
     <!-- Sidebar -->
-    <!-- Sidebar -->
-<aside class="w-64 bg-gray-900 text-white flex flex-col">
-  <div class="p-6 flex items-center justify-center border-b border-gray-700">
-    <!-- Replace Text with Logo -->
-    <img src="{% static 'logo.png' %}" alt="Logo" class="h-45">
-  </div>
-  <nav class="flex-1 p-4">
-    <a href="{% url 'dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800">📊 Dashboard</a>
-    <a href="{% url 'profile' %}" class="block py-2 px-4 rounded hover:bg-gray-800">👤 Profile</a>
-    <a href="{% url 'purchases' %}" class="block py-2 px-4 rounded hover:bg-gray-800">💳 Purchases</a>
-    <hr class="mt-3 mb-3">
-    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">🚪 Logout</button></form>
-  </nav>
-</aside>
-
+    <aside class="w-64 bg-gray-900 text-white flex flex-col">
+      <div class="p-6 flex items-center justify-center border-b border-gray-700">
+        <!-- Replace Text with Logo -->
+        <img src="{% static 'logo.png' %}" alt="Logo" class="h-45">
+      </div>
+      <nav class="flex-1 p-4">
+        <a href="{% url 'dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800">📊 Dashboard</a>
+        <a href="{% url 'profile' %}" class="block py-2 px-4 rounded hover:bg-gray-800">👤 Profile</a>
+        <a href="{% url 'purchases' %}" class="block py-2 px-4 rounded hover:bg-gray-800">💳 Purchases</a>
+        <hr class="mt-3 mb-3">
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+          <button type="submit">🚪 Logout</button>
+        </form>
+      </nav>
+    </aside>
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
@@ -59,9 +58,9 @@
           <div class="bg-yellow-500 text-white p-6 rounded-xl shadow">
             <h2 class="text-lg">Last Purchase</h2>
             {% if purchases %}
-            <p class="text-sm">{{ purchases.last.created_at|date:"M d, Y H:i" }}</p>
+              <p class="text-sm">{{ purchases.last.created_at|date:"M d, Y H:i" }}</p>
             {% else %}
-            <p class="text-sm">No purchase</p>
+              <p class="text-sm">No purchase</p>
             {% endif %}
           </div>
         </div>
@@ -96,15 +95,28 @@
                     <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">Paid</span>
                   {% elif purchase.status == "UNDER_REVIEW" %}
                     <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded-full">Under Review</span>
-                  {% else %}
+                  {% elif purchase.status == "FAILED" %}
                     <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full">Failed</span>
+                  {% else %}
+                    <span class="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">{{ purchase.status }}</span>
                   {% endif %}
                 </td>
                 <td class="p-3">
                   {% if purchase.status == "PAID" %}
-                    <span class="text-red-600 font-semibold">
-                      {{ purchase.expiry_date|date:"M d, Y" }}
-                    </span>
+                    {% if purchase.days_left > 0 %}
+                      <span class="text-green-600 font-semibold">
+                        Expires on {{ purchase.expiry_date|date:"M d, Y" }} 
+                        ({{ purchase.days_left }} days left)
+                      </span>
+                    {% elif purchase.days_left == 0 %}
+                      <span class="text-orange-600 font-semibold">
+                        Expires today ({{ purchase.expiry_date|date:"M d, Y" }})
+                      </span>
+                    {% else %}
+                      <span class="text-red-600 font-semibold">
+                        Expired on {{ purchase.expiry_date|date:"M d, Y" }}
+                      </span>
+                    {% endif %}
                   {% else %}
                     —
                   {% endif %}

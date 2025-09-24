@@ -103,12 +103,12 @@
     <div class="bg-white shadow rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-4">Summary</h2>
       <div id="summaryDetails" class="mb-4 text-gray-700">
-        <p>No plan selected</p>
+        <p>No plan selected </p>
       </div>
-      <div class="font-bold text-lg mb-4">Subtotal: <span id="subtotal">₹0</span></div>
 
       <!-- QR Code (hidden until plan selected) -->
       <div id="qrcode" class="flex justify-center mb-4 hidden"></div>
+      <div class="font-bold text-center gap-4 text-lg mb-4">Subtotal<span id="subtotal">0</span></div>
 
       <!-- Payment Logos (hidden initially) -->
       <div id="paymentLogos" class="hidden text-center mb-4">
@@ -119,6 +119,7 @@
           <img src="{% static 'assets/img/upi/upi.png' %}" alt="BHIM UPI" class="h-6">
         </div>
       </div>
+        <p>{{ product.title }}</p>
 
       <!-- UTR Input (hidden by default) -->
       <div id="utrBox" class="hidden mt-4">
@@ -182,7 +183,7 @@
         <p><b>${region}</b> Hosting — <b>${duration}</b></p>
         <p>Monthly: ₹${monthly} | Discount: ${discount}%</p>
       `;
-      subtotal.innerText = `₹${finalPrice.toFixed(2)}`;
+      subtotal.innerText = `  ${finalPrice.toFixed(2)}`;
 
       // Generate QR Code
       qrContainer.innerHTML = "";
@@ -190,8 +191,8 @@
 
       qr = new QRCode(qrContainer, {
         text: upiLink,
-        width: 200,
-        height: 200,
+        width: 230,
+        height: 230,
       });
 
       // Show QR and Logos

@@ -175,17 +175,45 @@ class Purchase(models.Model):
         validators=[validate_utr],
         help_text="Enter a 12-digit numeric UTR ID"
     )
+    expiry_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="UNDER_REVIEW")
     activated_at = models.DateField(null=True, blank=True)
     expiry_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+     
     def activate_package(self):
+        """Activate package and set expiry date"""
         if not self.activated_at:
             self.activated_at = date.today()
             months = int("".join(filter(str.isdigit, self.duration))) if self.duration else 1
             self.expiry_date = self.activated_at + timedelta(days=30 * months)
+            self.status = "PAID"
             self.save()
+
+    def check_and_update_status(self):
+        """Check expiry and auto-expire"""
+        if self.status == "PAID" and self.expiry_date:
+            if date.today() > self.expiry_date:  # 👈 Next day expire
+                self.status = "EXPIRED"
+                self.save()
+
+    @property
+    def current_status(self):
+        """Always return latest status"""
+        self.check_and_update_status()
+        return self.status
+
+
+    @property
+    def days_left(self):
+        """Return remaining days till expiry"""
+        if self.expiry_date:
+            remaining = (self.expiry_date - date.today()).days
+            return max(0, remaining)  # 0 se neeche na jaye
+        return None
+
+
 
     def __str__(self):
         return f"{self.user} | {self.product.title} | ₹{self.final_price} | {self.status}"
