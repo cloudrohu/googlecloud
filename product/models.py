@@ -154,11 +154,14 @@ def validate_utr(value):
 # ------------------------
 # Purchase
 # ------------------------
+
+
 class Purchase(models.Model):
     STATUS_CHOICES = (
         ("UNDER_REVIEW", "Under Review"),
         ("PAID", "Paid"),
         ("FAILED", "Payment Failed"),
+        ("EXPIRED", "Expired"),  # 👈 Add karo
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
