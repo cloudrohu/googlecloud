@@ -5,55 +5,98 @@
   <title>{{ product.title }} - Hosting Plans</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  {% load static %}
 </head>
 <body class="bg-gray-50 text-gray-800">
+
+  <br>
+
+    <!-- Breadcrumb -->
+  <nav class="flex max-w-6xl mx-auto mt-6 px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-2">
+      <li class="inline-flex items-center">
+        <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+          <svg class="w-3 h-3 me-2.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+          </svg>
+          Home
+        </a>
+      </li>
+      <li>/</li>
+      <li>
+        <a href="/" class="text-sm font-medium text-gray-700 hover:text-blue-600">CHOOSE {{ product.category.name|default:"HOSTING" }} TENURE</a>
+      </li>
+      <li>/</li>
+      <li class="text-gray-500 font-medium">{{ product.title }}</li>
+    </ol>
+  </nav>
 
   <div class="max-w-6xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
     
     <!-- LEFT: Hosting Tenure (dynamic) -->
     <div class="md:col-span-2 bg-white shadow rounded-lg p-6">
-      <h2 class="text-xl font-semibold mb-4">CHOOSE HOSTING TENURE</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% for price in product.prices.all %}
-        <label class="flex items-center justify-between border p-3 rounded cursor-pointer hover:shadow">
-          
-          <!-- Radio -->
-          <input type="radio" name="plan"
-                 data-region="{{ price.region.name }}"
-                 data-duration="{{ price.duration.name }}"
-                 data-monthly="{{ price.monthly }}"
-                 data-discount="{{ price.discount|default:0 }}"
-                 data-final="{{ price.discounted_price }}"
-                 class="mr-3">
+      <h2 class="text-xl font-semibold mb-4">CHOOSE {{ product.category.name|default:"HOSTING" }} TENURE</h2>
 
-          <!-- Region Logo + Details -->
-          <div class="flex items-center gap-3">
-            {% if price.region.logo %}
-            <img src="{{ price.region.logo.url }}" 
-                 alt="{{ price.region.name }}" 
-                 class="w-14 h-14 rounded-full border mr-[20px]">
-            {% endif %}
-            <div>
-              <p class="font-medium">{{ price.region.name }} — {{ price.duration.name }}</p>
-              <p class="text-sm text-gray-500">Monthly: ₹{{ price.monthly }}</p>
-            </div>
-          </div>
+      <li class="text-gray-500 font-medium">{{ product.title }}</li>
 
-          <!-- Pricing -->
-          <div class="text-right">
-            <p class="font-bold text-green-600">₹{{ price.discounted_price }}</p>
-            {% if price.discount %}
-            <p class="text-xs text-red-600 line-through">₹{{ price.total_price }}</p>
-            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
-              SAVE {{ price.discount }}%
-            </span>
-            {% endif %}
-          </div>
+      <br>
 
-        </label>
-        {% endfor %}
-      </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+  {% for price in product.prices.all %}
+  <label class="flex items-center justify-between border p-4 rounded cursor-pointer hover:shadow transition">
+
+  <!-- Radio + Logo ek group -->
+  <div class="flex items-center">
+    <input type="radio" name="plan"
+           data-region="{{ price.region.name }}"
+           data-duration="{{ price.duration.name }}"
+           data-monthly="{{ price.monthly }}"
+           data-discount="{{ price.discount|default:0 }}"
+           data-final="{{ price.discounted_price }}"
+           class="mr-2 accent-orange-500"> <!-- accent se color bhi set kar sakte ho -->
+
+    {% if price.region.logo %}
+    <img src="{{ price.region.logo.url }}" 
+         alt="{{ price.region.name }}" 
+         class="w-14 h-14 rounded-full border">
+    {% endif %}
+  </div>
+
+  <!-- Title + Monthly -->
+  <div class="flex-1 ml-3">
+    <p class="font-medium text-gray-800">
+      {{ price.region.name }} {{ price.duration.name }}
+    </p>
+    <p class="text-sm text-gray-600 mt-1">
+      {% if price.discount %}
+        <del class="text-red-600">₹{{ price.monthly|floatformat:0 }}</del>
+        <span class="text-green-600 font-semibold">₹{{ price.discounted_monthly|floatformat:0 }}/mo</span>
+      {% else %}
+        ₹{{ price.monthly|floatformat:0 }}/mo
+      {% endif %}
+    </p>
+  </div>
+
+  <!-- Pricing -->
+  <div class="text-right">
+    {% if price.discount %}
+    <p class="text text-red-700 line-through">₹{{ price.total_price|floatformat:0 }}</p>
+    {% endif %}
+    
+    <p class="font-bold text-green-600 ">₹{{ price.discounted_price|floatformat:0 }}</p>
+
+    {% if price.discount %}
+    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs mt-1 inline-block mt-1">
+      SAVE {{ price.discount |floatformat:0}}%
+    </span>
+    {% endif %}
+  </div>
+</label>
+
+  {% endfor %}
+</div>
+
+
     </div>
 
     <!-- RIGHT: Summary + QR Code + Payment -->
@@ -67,12 +110,31 @@
       <!-- QR Code (hidden until plan selected) -->
       <div id="qrcode" class="flex justify-center mb-4 hidden"></div>
 
+      <!-- Payment Logos (hidden initially) -->
+      <div id="paymentLogos" class="hidden text-center mb-4">
+        <div class="flex justify-center items-center space-x-4 mt-3">
+          <img src="{% static 'assets/img/upi/google-pay.png' %}" alt="Google Pay" class="h-6">
+          <img src="{% static 'assets/img/upi/paytm.jpg' %}" alt="Paytm" class="h-6">
+          <img src="{% static 'assets/img/upi/phonepe.jpg' %}" alt="PhonePe" class="h-6">
+          <img src="{% static 'assets/img/upi/upi.png' %}" alt="BHIM UPI" class="h-6">
+        </div>
+      </div>
+
       <!-- UTR Input (hidden by default) -->
       <div id="utrBox" class="hidden mt-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Enter UTR / Transaction ID</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Enter UTR / Transaction ID
+        </label>
+        
         <input type="text" id="utrInput" 
-               class="w-full border rounded px-3 py-2 focus:ring focus:ring-orange-200" 
-               placeholder="Enter UTR ID">
+              class="w-full border rounded px-3 py-2 focus:ring focus:ring-orange-200" 
+              placeholder="Enter 12-digit UTR ID">
+
+        <!-- Error message -->
+        <p id="utrError" class="text-red-600 text-sm mt-2 hidden">
+          UTR ID must be exactly 12 digits.
+        </p>
+
         <button id="utrSubmit" 
                 class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
           CONFIRM PAYMENT
@@ -81,111 +143,214 @@
 
       <!-- Pay Button -->
       <button id="payButton" 
-              class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mt-4">
+              class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mt-4 hidden">
         PAY AND CONTINUE
       </button>
     </div>
   </div>
 
   <script>
-    const radios = document.querySelectorAll('input[name="plan"]');
-    const subtotal = document.getElementById('subtotal');
-    const summaryDetails = document.getElementById('summaryDetails');
-    const qrContainer = document.getElementById('qrcode');
-    const payButton = document.getElementById('payButton');
-    const utrBox = document.getElementById('utrBox');
-    const utrSubmit = document.getElementById('utrSubmit');
-    const utrInput = document.getElementById('utrInput');
-    let qr;
-    let selectedPlan = {};
+  const radios = document.querySelectorAll('input[name="plan"]');
+  const subtotal = document.getElementById('subtotal');
+  const summaryDetails = document.getElementById('summaryDetails');
+  const qrContainer = document.getElementById('qrcode');
+  const payButton = document.getElementById('payButton');
+  const utrBox = document.getElementById('utrBox');
+  const utrSubmit = document.getElementById('utrSubmit');
+  const utrInput = document.getElementById('utrInput');
+  const paymentLogos = document.getElementById('paymentLogos');
+  let qr;
+  let selectedPlan = {};
 
-    const upiID = "googlecloudhost@uboi"; 
-    const payeeName = "Google Cloud Host";
+  const upiID = "googlecloudhost@uboi"; 
+  const payeeName = "Google Cloud Host";
 
-    // Step 1: On plan select
-    radios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        const region = radio.dataset.region;
-        const duration = radio.dataset.duration;
-        const monthly = parseFloat(radio.dataset.monthly);
-        const discount = parseFloat(radio.dataset.discount);
-        const finalPrice = parseFloat(radio.dataset.final);
+  // Step 1: On plan select
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      const region = radio.dataset.region;
+      const duration = radio.dataset.duration;
+      const monthly = parseFloat(radio.dataset.monthly);
+      const discount = parseFloat(radio.dataset.discount);
+      const finalPrice = parseFloat(radio.dataset.final);
 
-        // Store selected plan
-        selectedPlan = { region, duration, monthly, discount, finalPrice };
+      // Store selected plan
+      selectedPlan = { region, duration, monthly, discount, finalPrice };
 
-        // Update Summary
-        summaryDetails.innerHTML = `
-          <p><b>${region}</b> Hosting — <b>${duration}</b></p>
-          <p>Monthly: ₹${monthly} | Discount: ${discount}%</p>
-        `;
-        subtotal.innerText = `₹${finalPrice.toFixed(2)}`;
+      // Update Summary
+      summaryDetails.innerHTML = `
+        <p><b>${region}</b> Hosting — <b>${duration}</b></p>
+        <p>Monthly: ₹${monthly} | Discount: ${discount}%</p>
+      `;
+      subtotal.innerText = `₹${finalPrice.toFixed(2)}`;
 
-        // Generate QR Code
-        qrContainer.innerHTML = "";
-        const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(payeeName)}&am=${finalPrice.toFixed(2)}&cu=INR&tn=Hosting ${duration} (${region})`;
+      // Generate QR Code
+      qrContainer.innerHTML = "";
+      const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(payeeName)}&am=${finalPrice.toFixed(2)}&cu=INR&tn=Hosting ${duration} (${region})`;
 
-        qr = new QRCode(qrContainer, {
-          text: upiLink,
-          width: 200,
-          height: 200,
-        });
-
-        qrContainer.classList.remove('hidden');
-        utrBox.classList.add('hidden');
-        payButton.classList.remove('hidden');
-        payButton.innerText = `PAY ₹${finalPrice.toFixed(2)} AND CONTINUE`;
+      qr = new QRCode(qrContainer, {
+        text: upiLink,
+        width: 200,
+        height: 200,
       });
+
+      // Show QR and Logos
+      qrContainer.classList.remove('hidden');
+      paymentLogos.classList.remove('hidden');
+      utrBox.classList.add('hidden');
+      payButton.classList.remove('hidden');
+      payButton.innerText = `PAY ₹${finalPrice.toFixed(2)} AND CONTINUE`;
     });
+  });
 
-    // Step 2: On PAY click → hide QR & hide PAY button → show UTR
-    payButton.addEventListener('click', () => {
-      if (!selectedPlan.finalPrice) {
-        alert("Please select a plan first!");
-        return;
-      }
-      qrContainer.classList.add('hidden'); 
-      payButton.classList.add('hidden');   
-      utrBox.classList.remove('hidden');   
-    });
+  // Step 2: On PAY click → hide QR & logos → show UTR
+  payButton.addEventListener('click', () => {
+    if (!selectedPlan.finalPrice) {
+      alert("Please select a plan first!");
+      return;
+    }
+    qrContainer.classList.add('hidden'); 
+    paymentLogos.classList.add('hidden');
+    payButton.classList.add('hidden');   
+    utrBox.classList.remove('hidden');   
+  });
 
-    // Step 3: Confirm UTR → Save purchase and redirect
-    utrSubmit.addEventListener('click', () => {
-      const utr = utrInput.value.trim();
-      if (!utr) {
-        alert("Please enter UTR ID");
-        return;
-      }
+  // Step 3: Confirm UTR → Save purchase and redirect
+  utrSubmit.addEventListener('click', () => {
+    const utr = utrInput.value.trim();
 
-      fetch("{% url 'save_purchase' %}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: JSON.stringify({
-          product: "{{ product.id }}",
-          region: selectedPlan.region,
-          duration: selectedPlan.duration,
-          final_price: selectedPlan.finalPrice,
-          utr_id: utr
-        })
+    // ✅ Validation: must be exactly 12 digits
+    if (!/^\d{12}$/.test(utr)) {
+      alert("UTR ID must be exactly 12 digits.");
+      return;
+    }
+
+    fetch("{% url 'save_purchase' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}"
+      },
+      body: JSON.stringify({
+        product: "{{ product.id }}",
+        region: selectedPlan.region,
+        duration: selectedPlan.duration,
+        final_price: selectedPlan.finalPrice,
+        utr_id: utr
       })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Server response:", data);
-        if (data.success && data.redirect_url) {
-          window.location.href = data.redirect_url;  // ✅ Thank You page
-        } else {
-          alert("Error: " + (data.error || "Something went wrong"));
-        }
-      })
-      .catch(err => {
-        console.error("Error:", err);
-        alert("Request failed");
-      });
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log("Server response:", data);
+      if (data.success && data.redirect_url) {
+        window.location.href = data.redirect_url;  // ✅ Thank You page
+      } else {
+        alert("Error: " + (data.error || "Something went wrong"));
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      alert("Request failed");
     });
-  </script>
+  });
+</script>
+
+  
+<!-- Footer -->
+<footer class="bg-gray-50 border-t border-gray-200 mt-12 text-gray-700">
+  <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-5 gap-8">
+
+    <!-- Column 1 -->
+    <div>
+      <h3 class="font-semibold text-gray-900 mb-3">Why Google Cloud Host</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:underline">Choosing Google Cloud Host</a></li>
+        <li><a href="#" class="hover:underline">Trust and Security</a></li>
+        <li><a href="#" class="hover:underline">Multicloud</a></li>
+        <li><a href="#" class="hover:underline">Global Infrastructure</a></li>
+        <li><a href="#" class="hover:underline">Case Studies</a></li>
+        <li><a href="#" class="hover:underline">Blog</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 2 -->
+    <div>
+      <h3 class="font-semibold text-gray-900 mb-3">Products and Pricing</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:underline">Cloud Hosting</a></li>
+        <li><a href="#" class="hover:underline">VPS Hosting</a></li>
+        <li><a href="#" class="hover:underline">Dedicated Hosting</a></li>
+        <li><a href="#" class="hover:underline">See all Products</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3 -->
+    <div>
+      <h3 class="font-semibold text-gray-900 mb-3">Solutions</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:underline">Infrastructure Modernization</a></li>
+        <li><a href="#" class="hover:underline">Databases</a></li>
+        <li><a href="#" class="hover:underline">AI Solutions</a></li>
+        <li><a href="#" class="hover:underline">Security</a></li>
+        <li><a href="#" class="hover:underline">Small Business</a></li>
+        <li><a href="#" class="hover:underline">All Solutions</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4 -->
+    <div>
+      <h3 class="font-semibold text-gray-900 mb-3">Resources</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:underline">Documentation</a></li>
+        <li><a href="#" class="hover:underline">Quickstarts</a></li>
+        <li><a href="#" class="hover:underline">Marketplace</a></li>
+        <li><a href="#" class="hover:underline">Code Samples</a></li>
+        <li><a href="#" class="hover:underline">Certifications</a></li>
+        <li><a href="#" class="hover:underline">Support</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 5 -->
+    <div>
+      <h3 class="font-semibold text-gray-900 mb-3">Engage</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:underline">Contact Sales</a></li>
+        <li><a href="#" class="hover:underline">Events</a></li>
+        <li><a href="#" class="hover:underline">Press Corner</a></li>
+        <li><a href="#" class="hover:underline">YouTube</a></li>
+        <li><a href="#" class="hover:underline">Follow on X</a></li>
+        <li><a href="#" class="hover:underline">Community</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+      
+      <!-- Left Links -->
+      <div class="flex space-x-4 mb-3 md:mb-0">
+        <a href="#" class="hover:underline">About Google Cloud Host</a>
+        <a href="#" class="hover:underline">Privacy</a>
+        <a href="#" class="hover:underline">Terms</a>
+        <a href="#" class="hover:underline">Site Map</a>
+      </div>
+
+      <!-- Right Side -->
+      <div class="flex items-center space-x-4">
+        <p>🌱 Join our sustainability program</p>
+        <button class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 text-sm">
+          Subscribe
+        </button>
+        <select class="border rounded px-2 py-1 text-sm">
+          <option>English</option>
+          <option>हिन्दी</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</footer>
+
 
 </body>
 </html>

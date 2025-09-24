@@ -11,41 +11,6 @@ class PriceInline(admin.TabularInline):
 
 
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'status', 'created_at', 'show_prices')
-    search_fields = ('title', 'description')
-    list_filter = ('status', 'category', 'created_at')
-    prepopulated_fields = {"slug": ("title",)}
-    inlines = [PriceInline]
-
-    def show_prices(self, obj):
-        prices = obj.prices.all()
-        if not prices:
-            return "-"
-        return format_html(
-            "<ul style='margin:0; padding-left:15px;'>"
-            "{}"
-            "</ul>",
-            format_html_join(
-                '',
-                "<li>{} | {} | Monthly: ₹{} | Total: <b>₹{}</b> | Discount: {}% | Final: <span style='color:green;'><b>₹{}</b></span></li>",
-                (
-                    (
-                        p.region.name,
-                        p.duration.name,
-                        p.monthly,
-                        p.total_price(),
-                        p.discount or 0,
-                        p.discounted_price()
-                    )
-                    for p in prices
-                )
-            )
-        )
-    show_prices.short_description = "Prices"
-
-
 
 
 @admin.register(Categories)
@@ -75,37 +40,38 @@ class PriceAdmin(admin.ModelAdmin):
     search_fields = ('product__title',)
 
 
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'status', 'created_at', 'show_prices')
+    search_fields = ('title', 'description')
+    list_filter = ('status', 'category', 'created_at')
+    prepopulated_fields = {"slug": ("title",)}
+    inlines = [PriceInline]
+
+    def show_prices(self, obj):
+        prices = obj.prices.all()
+        if not prices:
+            return "-"
+        return format_html(
+            "<br>".join(
+                f"<b>{p.region.name} — {p.duration.name}</b>: ₹{p.monthly}/mo → "
+                f"<span style='color:green;'>₹{p.discounted_price()}</span> (SAVE {p.discount or 0}%)"
+                for p in prices
+            )
+        )
+    show_prices.short_description = "Prices"
+
 @admin.register(Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "product",
-        "region",
-        "duration",
-        "show_final_price",
-        "utr_id",
-        "created_at",
-    )
-    search_fields = ("product__title", "user__username", "utr_id")
-    list_filter = ("region", "duration", "created_at")
-    readonly_fields = ("created_at",)
+    list_display = ("user", "product", "region", "duration", "final_price", "status", "activated_at", "expiry_date")
+    list_filter = ("status", "region", "duration")
+    search_fields = ("user__username", "product__title", "utr_id")
+    readonly_fields = ("created_at", "activated_at", "expiry_date")
 
-    fieldsets = (
-        ("Purchase Info", {
-            "fields": ("user", "product", "region", "duration", "final_price", "utr_id")
-        }),
-        ("Meta", {
-            "fields": ("created_at",),
-        }),
-    )
-
-    def show_final_price(self, obj):
-        return format_html(
-            "<span style='color:green; font-weight:bold;'>₹{}</span>",
-            obj.final_price
-        )
-    show_final_price.short_description = "Final Price"
-
-
-
-
+    def save_model(self, request, obj, form, change):
+        # ✅ Jab admin "Paid" kare → auto activate
+        if obj.status == "PAID" and not obj.activated_at:
+            obj.activate_package()
+        super().save_model(request, obj, form, change)
