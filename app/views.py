@@ -9,6 +9,7 @@ from time import time
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 from product.models import *
+from ads.models import AdCampaign
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -324,30 +325,41 @@ def thank_you(request, purchase_id):
 @login_required
 def user_dashboard(request):
     purchases = Purchase.objects.filter(user=request.user)
+    ads = AdCampaign.objects.filter(user=request.user).order_by("-created_at")
+
     total_spent = sum(p.final_price for p in purchases)
     return render(request, "dashboard.html", {
         "purchases": purchases,
         "total_spent": total_spent,
+        "ads": ads,
     })
 
 @login_required
 def purchase_list(request):
     purchases = Purchase.objects.filter(user=request.user)
-    return render(request, "purchases.html", {"purchases": purchases})
+    ads = AdCampaign.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "purchases.html", {"purchases": purchases ,"ads": ads,
+    })
 
 @login_required
 def user_profile(request):
     purchases = Purchase.objects.filter(user=request.user)
+    ads = AdCampaign.objects.filter(user=request.user).order_by("-created_at")
+    
     total_spent = sum(p.final_price for p in purchases)
     return render(request, "profile.html", {
         "user": request.user,
         "purchases": purchases,
         "total_spent": total_spent,
+        "ads": ads,
+
     })
 
 @login_required
 def expire_packages():
     purchases = Purchase.objects.filter(status="PAID", expiry_date__lt=date.today())
+    ads = AdCampaign.objects.filter(user=request.user).order_by("-created_at")
+
     for purchase in purchases:
         purchase.status = "EXPIRED"
         purchase.save()

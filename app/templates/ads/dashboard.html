@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Dashboard</title>
+  <title>Ads Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
@@ -14,15 +14,13 @@
 
     <!-- Sidebar -->
     <aside class="w-64 bg-gray-900 text-white flex flex-col">
-      <div class="flex items-center justify-center border-b border-gray-700">
-        <!-- Replace Text with Logo -->
-        <img src="{% static 'logo2.png' %}" alt="Logo" class="h-45" style="width: 100%;height: 71px;">
+      <div class=" flex items-center justify-center border-b border-gray-700">
+        <img src="{% static 'google_ads_logo.png' %}" alt="Logo" class="h-45" style="width: 100%;height: 72px;">
       </div>
       <nav class="flex-1 p-4">
         <a href="{% url 'dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800">📊 Dashboard</a>
         <a href="{% url 'profile' %}" class="block py-2 px-4 rounded hover:bg-gray-800">👤 Profile</a>
-      <a href="{% url 'ads:ads_dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800">💳 Ads Services</a>
-
+        <a href="{% url 'ads:ads_dashboard' %}" class="block py-2 px-4 rounded bg-gray-800 font-semibold">💳 Ads Services</a>
         <hr class="mt-3 mb-3">
         <form method="post" action="{% url 'logout' %}">{% csrf_token %}
           <button type="submit">🚪 Logout</button>
@@ -35,7 +33,7 @@
       
       <!-- Topbar -->
       <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-semibold">Dashboard</h1>
+        <h1 class="text-xl font-semibold">Ads Dashboard</h1>
         <div class="flex items-center gap-3">
           <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=random"
                class="w-10 h-10 rounded-full border">
@@ -49,73 +47,75 @@
         <!-- Cards Row -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div class="bg-blue-500 text-white p-6 rounded-xl shadow">
-            <h2 class="text-lg">Total Purchases</h2>
-            <p class="text-3xl font-bold">{{ purchases.count }}</p>
+            <h2 class="text-lg">Total Campaigns</h2>
+            <p class="text-3xl font-bold">{{ total_ads }}</p>
           </div>
           <div class="bg-green-500 text-white p-6 rounded-xl shadow">
             <h2 class="text-lg">Total Spent</h2>
-            <p class="text-3xl font-bold">₹{{ total_spent }}</p>
+            <p class="text-3xl font-bold">₹{{ total_spent|floatformat:2 }}</p>
           </div>
           <div class="bg-yellow-500 text-white p-6 rounded-xl shadow">
-            <h2 class="text-lg">Last Purchase</h2>
-            {% if purchases %}
-              <p class="text-sm">{{ purchases.last.created_at|date:"M d, Y H:i" }}</p>
+            <h2 class="text-lg">Last Campaign</h2>
+            {% if last_purchase %}
+              <p class="text-sm">{{ last_purchase|date:"M d, Y H:i" }}</p>
             {% else %}
-              <p class="text-sm">No purchase</p>
+              <p class="text-sm">No campaigns yet</p>
             {% endif %}
           </div>
         </div>
 
-        <!-- Purchases Table -->
+        <!-- Ad Campaign Table -->
         <div class="bg-white rounded-xl shadow overflow-x-auto">
-          <h2 class="text-xl font-semibold p-4 border-b">Purchase History</h2>
+          <h2 class="text-xl font-semibold p-4 border-b">Ad Campaign History</h2>
           <table class="w-full">
             <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
               <tr>
-                <th class="p-3 text-left">Product</th>
-                <th class="p-3 text-left">Region</th>
+                <th class="p-3 text-left">Domain</th>
+                <th class="p-3 text-left">Daily Budget</th>
                 <th class="p-3 text-left">Duration</th>
                 <th class="p-3 text-left">UTR ID</th>
-                <th class="p-3 text-left">Amount</th>
-                <th class="p-3 text-left">Date</th>
+                <th class="p-3 text-left">Total (Incl. GST)</th>
+                <th class="p-3 text-left">Created</th>
                 <th class="p-3 text-left">Status</th>
                 <th class="p-3 text-left">Expiry</th>
               </tr>
             </thead>
             <tbody>
-              {% for purchase in purchases %}
+              {% for ad in ads %}
               <tr class="border-t hover:bg-gray-50">
-                <td class="p-3">{{ purchase.product.title }}</td>
-                <td class="p-3">{{ purchase.region }}</td>
-                <td class="p-3">{{ purchase.duration }}</td>
-                <td class="p-3 font-mono text-blue-600">{{ purchase.utr_id }}</td>
-                <td class="p-3 font-bold text-green-600">₹{{ purchase.final_price }}</td>
-                <td class="p-3">{{ purchase.created_at|date:"M d, Y H:i" }}</td>
+                <td class="p-3">{{ ad.domain_name }}</td>
+                <td class="p-3">₹{{ ad.daily_budget }}</td>
+                <td class="p-3">{{ ad.get_duration_display }}</td>
+                <td class="p-3 font-mono text-blue-600">{{ ad.utr_id|default:"—" }}</td>
+                <td class="p-3 font-bold text-green-600">₹{{ ad.total_with_gst }}</td>
+                <td class="p-3">{{ ad.created_at|date:"M d, Y H:i" }}</td>
                 <td class="p-3">
-                  {% if purchase.status == "PAID" %}
+                  {% if ad.status == "PAID" %}
                     <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">Paid</span>
-                  {% elif purchase.status == "UNDER_REVIEW" %}
+                  {% elif ad.status == "UNDER_REVIEW" %}
                     <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded-full">Under Review</span>
-                  {% elif purchase.status == "FAILED" %}
+                  {% elif ad.status == "FAILED" %}
                     <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full">Failed</span>
+                  {% elif ad.status == "EXPIRED" %}
+                    <span class="bg-gray-300 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">Expired</span>
                   {% else %}
-                    <span class="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">{{ purchase.status }}</span>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-1 rounded-full">{{ ad.status }}</span>
                   {% endif %}
                 </td>
                 <td class="p-3">
-                  {% if purchase.status == "PAID" %}
-                    {% if purchase.days_left > 0 %}
+                  {% if ad.status == "PAID" %}
+                    {% if ad.days_left > 0 %}
                       <span class="text-green-600 font-semibold">
-                        Expires on {{ purchase.expiry_date|date:"M d, Y" }} 
-                        ({{ purchase.days_left }} days left)
+                        Expires on {{ ad.expiry_date|date:"M d, Y" }}
+                        ({{ ad.days_left }} days left)
                       </span>
-                    {% elif purchase.days_left == 0 %}
+                    {% elif ad.days_left == 0 %}
                       <span class="text-orange-600 font-semibold">
-                        Expires today ({{ purchase.expiry_date|date:"M d, Y" }})
+                        Expires today ({{ ad.expiry_date|date:"M d, Y" }})
                       </span>
                     {% else %}
                       <span class="text-red-600 font-semibold">
-                        Expired on {{ purchase.expiry_date|date:"M d, Y" }}
+                        Expired on {{ ad.expiry_date|date:"M d, Y" }}
                       </span>
                     {% endif %}
                   {% else %}
@@ -126,7 +126,7 @@
               {% empty %}
               <tr>
                 <td colspan="8" class="p-6 text-center text-gray-500">
-                  ⚠️ You haven’t purchased any plan yet.
+                  ⚠️ You haven’t created any ad campaigns yet.
                 </td>
               </tr>
               {% endfor %}

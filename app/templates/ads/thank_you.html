@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 flex items-center justify-center h-screen">
+
+  <div class="bg-white shadow-lg rounded-lg p-8 max-w-lg text-center">
+    <h1 class="text-3xl font-bold text-green-600 mb-4">✅ Payment Under Review!</h1>
+    <p class="mb-4">Thank you for purchasing <b>{{ purchase.product.title }}</b></p>
+    
+    <div class="border p-4 rounded text-left mb-4">
+
+
+        <!-- Summary Box -->
+    <div class="text-left border border-gray-200 rounded-xl p-5 bg-gray-50 shadow-inner mb-8 space-y-1">
+      <p><b>Domain:</b> <span class="text-gray-800">{{ ad.domain_name }}</span></p>
+      <p><b>Daily Budget:</b> ₹{{ ad.daily_budget }}</p>
+      <p><b>Duration:</b> {{ ad.get_duration_display }}</p>
+      <p><b>UTR ID:</b> <span class="font-mono text-blue-700">{{ ad.utr_id }}</span></p>
+      <p><b>Total (Incl. GST):</b> ₹{{ ad.total_with_gst }}</p>
+
+      {% if ad.expiry_date %}
+        <p><b>Expiry Date:</b> {{ ad.expiry_date }}</p>
+      {% endif %}
+
+      <p><b>Status:</b>
+        {% if ad.status == "UNDER_REVIEW" %}
+          <span class="text-yellow-600 font-semibold">Under Review</span>
+        {% elif ad.status == "PAID" %}
+          <span class="text-green-600 font-semibold">Active</span>
+        {% elif ad.status == "EXPIRED" %}
+          <span class="text-red-600 font-semibold">Expired</span>
+        {% else %}
+          <span class="text-gray-500 font-semibold">{{ ad.status }}</span>
+        {% endif %}
+      </p>
+    </div>
+
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Go to Home</a>
+  </div>
+
+</body>
+</html>

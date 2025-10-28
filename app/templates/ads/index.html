@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% load course_tags %}
+{% load custom_filters %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Ads - Online Advertising Plans</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+<!-- ===================== -->
+<!-- BREADCRUMB -->
+<!-- ===================== -->
+<nav class="flex max-w-6xl mx-auto mt-6 px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50" aria-label="Breadcrumb">
+  <ol class="inline-flex items-center space-x-2">
+    <li class="inline-flex items-center">
+      <a href="/" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+        <svg class="w-3 h-3 me-2.5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+        </svg>
+        Home
+      </a>
+    </li>
+    <li>/</li>
+    <li>
+      <span class="text-sm font-medium text-gray-700">Google Ads - Get Customers and Sell More</span>
+    </li>
+  </ol>
+</nav>
+
+<!-- ===================== -->
+<!-- MAIN GRID -->
+<!-- ===================== -->
+<div class="max-w-6xl mx-auto py-5 px-4 grid grid-cols-1 md:grid-cols-3 gap-2">
+
+  <!-- LEFT COLUMN -->
+  <div class="md:col-span-2 bg-white shadow rounded-lg p-6">
+    <h5 class="text-2xl font-semibold mb-4 text-gray-800">
+      Whatever your business goal, drive better results with Performance Max.
+    </h5>
+    <p class="text-gray-600 mb-6">Promote your website with custom budget and duration</p>
+
+    <form id="adForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Domain Name</label>
+        <input type="text" id="adDomain" name="domain_name"
+               class="w-full border rounded-lg p-2 focus:ring focus:ring-orange-200"
+               placeholder="e.g. examples.com" required>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Daily Budget (₹)</label>
+        <input type="number" id="adBudget" name="daily_budget" min="350"
+               class="w-full border rounded-lg p-2 focus:ring focus:ring-orange-200"
+               placeholder="Min ₹350" required>
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1">Duration</label>
+        <select id="adDuration" name="duration"
+                class="w-full border rounded-lg p-2 focus:ring focus:ring-orange-200">
+          <option value="7">7 Days</option>
+          <option value="15">15 Days</option>
+          <option value="30">1 Month (30.4 Days)</option>
+        </select>
+
+      </div>
+
+
+      <!-- Live Summary -->
+      <div class="md:col-span-2 mt-2">
+        <p id="adSummary" class="text-gray-700 font-medium"></p>
+      </div>
+
+      <!-- Error Message Box -->
+      <div id="formErrorBox" class="hidden md:col-span-2 mt-3 p-3 text-red-700 bg-red-100 border border-red-300 rounded text-sm"></div>
+
+      <!-- Submit -->
+      <div class="md:col-span-2 mt-3">
+        <button type="submit" id="adSubmitBtn"
+                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed">
+          Submit Campaign
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-lg font-semibold mb-2 text-gray-800">Ad Campaign Summary</h2>
+    <div id="adSummaryBox" class="text-sm text-gray-700 mb-3"></div>
+
+    <div id="adQrCode" class="flex justify-center mb-4 hidden"></div>
+    <div class="font-bold text-center text-lg mb-4"><span id="adTotal"></span></div>
+
+    <div id="adPaymentLogos" class="hidden text-center mb-4">
+      <div class="flex justify-center items-center space-x-4 mt-3">
+        <img src="{% static 'assets/img/upi/google-pay.png' %}" class="h-6" alt="Google Pay">
+        <img src="{% static 'assets/img/upi/paytm.jpg' %}" class="h-6" alt="Paytm">
+        <img src="{% static 'assets/img/upi/phonepe.jpg' %}" class="h-6" alt="PhonePe">
+        <img src="{% static 'assets/img/upi/upi.png' %}" class="h-6" alt="UPI">
+      </div>
+    </div>
+
+    <div id="adUtrBox" class="hidden mt-4">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Enter UTR / Transaction ID</label>
+      <input type="text" id="adUtrInput"
+             class="w-full border rounded px-3 py-2 focus:ring focus:ring-orange-200"
+             placeholder="Enter 12-digit UTR ID">
+      <button id="adUtrSubmit"
+              class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+        CONFIRM PAYMENT
+      </button>
+    </div>
+
+    <button id="adPayButton"
+            class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mt-4 hidden">
+      PAY ₹0 AND CONTINUE
+    </button>
+  </div>
+</div>
+
+<!-- ===================== -->
+<!-- SCRIPT -->
+<!-- ===================== -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // =========================
+  // ELEMENT REFERENCES
+  // =========================
+  const domainInput = document.getElementById("adDomain");
+  const budgetInput = document.getElementById("adBudget");
+  const durationSelect = document.getElementById("adDuration");
+  const adSummaryBox = document.getElementById("adSummaryBox");
+  const adQrCode = document.getElementById("adQrCode");
+  const adPaymentLogos = document.getElementById("adPaymentLogos");
+  const adPayButton = document.getElementById("adPayButton");
+  const adUtrBox = document.getElementById("adUtrBox");
+  const adUtrInput = document.getElementById("adUtrInput");
+  const adUtrSubmit = document.getElementById("adUtrSubmit");
+  const adTotalSpan = document.getElementById("adTotal");
+  const errorBox = document.getElementById("formErrorBox");
+
+  const upiID = "googlecloudhost@uboi";
+  const payeeName = "Google Ads Services";
+  let total = 0;
+
+  // =========================
+  // DURATION LOGIC (SMART)
+  // =========================
+
+  // 1️⃣ Hide all options on page load
+  for (let opt of durationSelect.options) {
+    opt.hidden = true;
+  }
+  durationSelect.value = ""; // Reset default
+
+  // 2️⃣ Update duration visibility when user types budget
+  budgetInput.addEventListener("input", () => {
+    const budget = parseFloat(budgetInput.value) || 0;
+
+    // Hide all first
+    for (let opt of durationSelect.options) {
+      opt.hidden = true;
+    }
+
+    if (budget <= 0) {
+      durationSelect.value = "";
+      return;
+    }
+
+    if (budget < 2500) {
+      // 💡 Only 1 Month allowed
+      showOptions(["30"]);
+      durationSelect.value = "30";
+    } else if (budget >= 2500 && budget < 10000) {
+      // 💡 15 Days + 1 Month
+      showOptions(["15", "30"]);
+      durationSelect.value = "15";
+    } else if (budget >= 10000) {
+      // 💡 All (7 + 15 + 30)
+      showOptions(["7", "15", "30"]);
+      durationSelect.value = "7";
+    }
+  });
+
+  // Helper function to unhide allowed durations
+  function showOptions(values) {
+    for (let opt of durationSelect.options) {
+      if (values.includes(opt.value)) {
+        opt.hidden = false;
+      }
+    }
+  }
+
+  // =========================
+  // STEP 1 — GENERATE QR
+  // =========================
+  document.getElementById("adForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    errorBox.classList.add("hidden");
+
+    const domain = domainInput.value.trim();
+    const budget = parseFloat(budgetInput.value);
+    const duration = parseInt(durationSelect.value);
+
+    if (!domain || isNaN(budget) || budget < 350) {
+      errorBox.innerText = "⚠️ Please enter a valid domain and minimum ₹350 daily budget.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    if (!durationSelect.value) {
+      errorBox.innerText = "⚠️ Please select a valid duration for your ad campaign.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    const days = duration === 30 ? 30.4 : duration;
+    const subtotal = budget * days;
+    const gst = subtotal * 0.18;
+    total = subtotal + gst;
+
+    adSummaryBox.innerHTML = `
+      <p><b>Domain:</b> ${domain}</p>
+      <p><b>Budget:</b> ₹${budget} × ${days} days</p>
+      <p><b>GST (18%):</b> ₹${gst.toFixed(2)}</p>
+      <p class="font-semibold text-green-700"><b>Total:</b> ₹${total.toFixed(2)}</p>
+    `;
+
+    adQrCode.innerHTML = "";
+    const upiLink = "upi://pay?pa=" + upiID +
+      "&pn=" + encodeURIComponent(payeeName) +
+      "&am=" + total.toFixed(2) +
+      "&cu=INR&tn=Ad%20for%20" + domain;
+
+    new QRCode(adQrCode, { text: upiLink, width: 180, height: 180 });
+
+    adTotalSpan.innerText = "₹" + total.toFixed(2);
+    adQrCode.classList.remove("hidden");
+    adPaymentLogos.classList.remove("hidden");
+    adUtrBox.classList.add("hidden");
+    adPayButton.classList.remove("hidden");
+    adPayButton.innerText = "PAY ₹" + total.toFixed(2) + " AND CONTINUE";
+  });
+
+  // =========================
+  // STEP 2 — SHOW UTR BOX
+  // =========================
+  adPayButton.addEventListener("click", () => {
+    adQrCode.classList.add("hidden");
+    adPaymentLogos.classList.add("hidden");
+    adPayButton.classList.add("hidden");
+    adUtrBox.classList.remove("hidden");
+  });
+
+  // =========================
+  // STEP 3 — VALIDATE UTR + SUBMIT TO BACKEND
+  // =========================
+  adUtrSubmit.addEventListener("click", async () => {
+    const utr = adUtrInput.value.trim();
+    errorBox.classList.add("hidden");
+
+    if (!/^\d{12}$/.test(utr)) {
+      errorBox.innerText = "❌ UTR ID must be exactly 12 digits.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    const loader = document.createElement("div");
+    loader.innerHTML = `
+      <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-60 z-50">
+        <div class="flex flex-col items-center">
+          <div class="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+          <p class="text-white mt-4 font-medium">Verifying Payment...</p>
+        </div>
+      </div>`;
+    document.body.appendChild(loader);
+
+    try {
+      const res = await fetch("{% url 'ads:create_ad' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+          domain_name: domainInput.value,
+          daily_budget: budgetInput.value,
+          duration: durationSelect.value,
+          utr_id: utr,
+          total_amount: total
+        })
+      });
+
+      const data = await res.json();
+      loader.remove();
+
+      if (data.success && data.redirect_url) {
+        window.location.href = data.redirect_url;
+      } else {
+        errorBox.innerText = "❌ " + (data.error || "Something went wrong.");
+        errorBox.classList.remove("hidden");
+      }
+    } catch (err) {
+      loader.remove();
+      errorBox.innerText = "❌ Request failed. Please try again.";
+      errorBox.classList.remove("hidden");
+    }
+  });
+});
+</script>
+
+</body>
+</html>
+
+{% endblock content %}
