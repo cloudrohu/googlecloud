@@ -1,20 +1,33 @@
 from django.contrib import admin
-
+from import_export.admin import ImportExportModelAdmin
 from .models import *
 
-# Register your models here.
+class CourseAdmin(ImportExportModelAdmin):
+    list_display = [
+        'id',
+        'title',
+        'product',
+        'category',
+        'price',
+        'discount',
+        'disk_space'
+    ]
+
+class CategoriesAdmin(ImportExportModelAdmin):
+    pass
+
+class ProductAdmin(ImportExportModelAdmin):
+    pass
+
+class UserCourseAdmin(ImportExportModelAdmin):
+    pass
+
+class PaymentAdmin(ImportExportModelAdmin):
+    pass
 
 
-
-class course_admin(admin.ModelAdmin):
-    list_display = ['id', 'title','product','category','price','discount','disk_space']
-    
-
-
-
-admin.site.register(Categories)
-admin.site.register(Product)
-admin.site.register(Course,course_admin)
-
-admin.site.register(UserCourse)
-admin.site.register(Payment)
+admin.site.register(Categories, CategoriesAdmin)
+admin.site.register(Product, ProductAdmin)
+admin.site.register(Course, CourseAdmin)
+admin.site.register(UserCourse, UserCourseAdmin)
+admin.site.register(Payment, PaymentAdmin)

@@ -31,8 +31,11 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    'jet.dashboard',
-    'jet',
+
+    'jazzmin',
+
+    #'jet.dashboard',
+    #'jet',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'product',
     'crispy_forms',
     'embed_video',
+    'import_export',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

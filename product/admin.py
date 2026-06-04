@@ -1,7 +1,17 @@
 from django.utils.html import format_html, format_html_join
 from django.contrib import admin
 from .models import *
+from django.contrib.auth.admin import UserAdmin
+from import_export.admin import ImportExportModelAdmin
 
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
+
+@admin.register(User)
+class CustomUserAdmin(ImportExportModelAdmin, UserAdmin):
+    pass
 
 class PriceInline(admin.TabularInline):
     model = Price
@@ -11,39 +21,34 @@ class PriceInline(admin.TabularInline):
 
 
 
-
-
 @admin.register(Categories)
-class CategoriesAdmin(admin.ModelAdmin):
+class CategoriesAdmin(ImportExportModelAdmin):
     list_display = ('name', 'icon')
 
 
 @admin.register(Region)
-class RegionAdmin(admin.ModelAdmin):
+class RegionAdmin(ImportExportModelAdmin):
     list_display = ('name', 'logo')
 
 
 @admin.register(Duration)
-class DurationAdmin(admin.ModelAdmin):
+class DurationAdmin(ImportExportModelAdmin):
     list_display = ('name',)
 
 
 @admin.register(Feature)
-class FeatureAdmin(admin.ModelAdmin):
+class FeatureAdmin(ImportExportModelAdmin):
     list_display = ('name',)
 
-
 @admin.register(Price)
-class PriceAdmin(admin.ModelAdmin):
+class PriceAdmin(ImportExportModelAdmin):
     list_display = ('product', 'region', 'duration', 'monthly', 'discount')
     list_filter = ('region', 'duration')
     search_fields = ('product__title',)
 
 
-
-
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
     list_display = ('title', 'category', 'status', 'created_at', 'show_prices')
     search_fields = ('title', 'description')
     list_filter = ('status', 'category', 'created_at')
@@ -52,19 +57,25 @@ class ProductAdmin(admin.ModelAdmin):
 
     def show_prices(self, obj):
         prices = obj.prices.all()
-        if not prices:
+
+        if not prices.exists():
             return "-"
-        return format_html(
+
+        from django.utils.safestring import mark_safe
+
+        return mark_safe(
             "<br>".join(
                 f"<b>{p.region.name} — {p.duration.name}</b>: ₹{p.monthly}/mo → "
-                f"<span style='color:green;'>₹{p.discounted_price()}</span> (SAVE {p.discount or 0}%)"
+                f"<span style='color:green;'>₹{p.discounted_price()}</span> "
+                f"(SAVE {p.discount or 0}%)"
                 for p in prices
             )
         )
+
     show_prices.short_description = "Prices"
 
 @admin.register(Purchase)
-class PurchaseAdmin(admin.ModelAdmin):
+class PurchaseAdmin(ImportExportModelAdmin):
     list_display = ("user", "product", "region", "duration", "final_price", "status", "activated_at", "expiry_date")
     list_filter = ("status", "region", "duration")
     search_fields = ("user__username", "product__title", "utr_id")

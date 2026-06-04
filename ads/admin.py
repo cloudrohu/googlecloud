@@ -2,10 +2,12 @@ from django.contrib import admin
 from .models import AdCampaign
 from decimal import Decimal
 from datetime import date
+from import_export.admin import ImportExportModelAdmin
+from .models import AdCampaign
 
 
 @admin.register(AdCampaign)
-class AdCampaignAdmin(admin.ModelAdmin):
+class AdCampaignAdmin(ImportExportModelAdmin):
     list_display = (
         "id",
         "user",
