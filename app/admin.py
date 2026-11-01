@@ -25,7 +25,6 @@ class UserCourseAdmin(ImportExportModelAdmin):
 class PaymentAdmin(ImportExportModelAdmin):
     pass
 
-
 admin.site.register(Categories, CategoriesAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Course, CourseAdmin)

@@ -2,24 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Thank You</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Under Review</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 flex items-center justify-center h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex items-center justify-center p-4">
 
-  <div class="bg-white shadow-lg rounded-lg p-8 max-w-lg text-center">
-    <h1 class="text-3xl font-bold text-green-600 mb-4">✅ Payment Under Review!</h1>
-    <p class="mb-4">Thank you for purchasing <b>{{ purchase.product.title }}</b></p>
+  <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 max-w-md w-full text-center border border-slate-100">
     
-    <div class="border p-4 rounded text-left mb-4">
-      <p><b>Region:</b> {{ purchase.region }}</p>
-      <p><b>Duration:</b> {{ purchase.duration }}</p>
-      <p><b>Amount Paid:</b> ₹{{ purchase.final_price }}</p>
-      <p><b>UTR ID:</b> {{ purchase.utr_id }}</p>
-      <p><b>Date:</b> {{ purchase.created_at }}</p>
+    <!-- Animated Checkmark Icon -->
+    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 mb-6">
+      <svg class="h-8 w-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+      </svg>
     </div>
 
-    <a href="{% url 'dashboard' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Go to Home</a>
+    <!-- Header & Subtitle -->
+    <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Payment Under Review</h1>
+    <p class="text-slate-500 text-sm mt-1 mb-6">
+      Thank you for purchasing <span class="font-semibold text-slate-800">{{ purchase.product.title }}</span>
+    </p>
+
+    <!-- Info Status Box -->
+    <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-3.5 mb-6 text-left flex items-start space-x-3">
+      <svg class="w-5 h-5 text-amber-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <p class="text-xs text-amber-800 leading-relaxed">
+        We are verifying your transaction. Access will be granted automatically once confirmed (usually within 15-30 minutes).
+      </p>
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 text-left text-sm space-y-3 mb-6">
+      <div class="flex justify-between items-center pb-2.5 border-b border-slate-200/60">
+        <span class="text-slate-500">Amount Paid</span>
+        <span class="font-bold text-slate-900 text-base">₹{{ purchase.final_price }}</span>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <span class="text-slate-500">Region</span>
+        <span class="font-medium text-slate-700">{{ purchase.region }}</span>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <span class="text-slate-500">Duration</span>
+        <span class="font-medium text-slate-700">{{ purchase.duration }}</span>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <span class="text-slate-500">UTR ID</span>
+        <span class="font-mono text-xs font-semibold text-slate-800 bg-white px-2 py-1 rounded border border-slate-200">
+          {{ purchase.utr_id }}
+        </span>
+      </div>
+
+      <div class="flex justify-between items-center pt-1 text-xs text-slate-400">
+        <span>Date & Time</span>
+        <span>{{ purchase.created_at }}</span>
+      </div>
+    </div>
+
+    <!-- Primary Action Button -->
+    <a href="{% url 'dashboard' %}" class="inline-flex items-center justify-center w-full bg-slate-900 hover:bg-slate-800 text-white font-medium px-5 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99]">
+      Go to Dashboard
+      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+      </svg>
+    </a>
+
   </div>
 
 </body>

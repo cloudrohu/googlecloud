@@ -16,13 +16,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
 
 
-
 class MyLogoutView(LogoutView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
     
     
-# Create your views here.
 def BASE(request):
     return render(request,'base.html', )
 
@@ -317,10 +315,6 @@ def thank_you(request, purchase_id):
     return render(request, "thank_you.html", {"purchase": purchase})
 
 
-def thank_you(request, purchase_id):
-    purchase = get_object_or_404(Purchase, id=purchase_id)
-    return render(request, "thank_you.html", {"purchase": purchase})
-
 
 @login_required
 def user_dashboard(request):
@@ -363,3 +357,57 @@ def expire_packages():
     for purchase in purchases:
         purchase.status = "EXPIRED"
         purchase.save()
+
+def privacy_policy(request):
+    cotegory = Categories.objects.all().order_by('id')[:7]
+    product = Product.objects.filter(status='PUBLISH').order_by('id')[:50]
+    regions = Region.objects.all()
+
+
+    context = {
+        'cotegory': cotegory,
+        'product': product,
+        'regions': regions,
+    }
+    return render(request, 'Main/privacy_policy.html', context)
+
+def cookie_policy(request):
+    cotegory = Categories.objects.all().order_by('id')[:7]
+    product = Product.objects.filter(status='PUBLISH').order_by('id')[:50]
+    regions = Region.objects.all()
+
+
+    context = {
+        'cotegory': cotegory,
+        'product': product,
+        'regions': regions,
+    }
+    return render(request, 'Main/cookie_policy.html', context)
+
+def disclaimer(request):
+    cotegory = Categories.objects.all().order_by('id')[:7]
+    product = Product.objects.filter(status='PUBLISH').order_by('id')[:50]
+    regions = Region.objects.all()
+
+
+    context = {
+        'cotegory': cotegory,
+        'product': product,
+        'regions': regions,
+    }
+    return render(request, 'Main/disclaimer.html', context)
+
+def terms_of_services(request):
+    cotegory = Categories.objects.all().order_by('id')[:7]
+    product = Product.objects.filter(status='PUBLISH').order_by('id')[:50]
+    regions = Region.objects.all()
+
+
+    context = {
+        'cotegory': cotegory,
+        'product': product,
+        'regions': regions,
+    }
+
+    return render(request, 'Main/terms_of_services.html', context)
+

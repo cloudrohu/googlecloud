@@ -111,11 +111,7 @@
                                     Account
                                 </a>
                             </li>
-                            <li class="dropdown-item">
-                                <a class="dropdown-link" href="">
-                                    Enrolled Courses
-                                </a>
-                            </li>
+                            
                             <li class="dropdown-item">
                                 <form method="post" action="{% url 'logout' %}">
                                     {% csrf_token %}
@@ -137,16 +133,7 @@
                                     Account
                                 </a>
                             </li>
-                            <li class="dropdown-item">
-                                <a class="dropdown-link" href="{% url 'my_course' %}">
-                                    Enrolled Courses
-                                </a>
-                            </li>
-                            <li class="dropdown-item">
-                                <a href="{% url 'home' %}" class="dropdown-link">
-                                    Company List
-                                </a>
-                            </li>
+                            
                             <li class="dropdown-item">
                                 <a href="{% url 'logout' %}" class="dropdown-link">
                                     Logout

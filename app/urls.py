@@ -19,6 +19,8 @@ urlpatterns = [
     path('search',views.SEARCH_COURSE,name='search_course'),    
     path('course/<slug:slug>',views.COURSE_DETAILS,name='course_details'),
 
+
+
     path('checkout/<slug:slug>', views.CHECKOUT, name='checkout'),
     path('my_course', views.MY_COURSE, name='my_course'),
     path('course/watch_course/<slug:slug>', views.WATCH_COURSE, name='watch_course'),
@@ -30,7 +32,9 @@ urlpatterns = [
     path('accounts/register', user_login.REGISTER,name='register'),
     path('do_login', user_login.DO_LOGIN,name='do_login'),
     path('accounts/logout/', MyLogoutView.as_view(), name='logout'),
-    
+
+
+
     path('accounts/profile', user_login.PROFILE,name='profile'),
     path('accounts/profile_update', user_login.Profile_Update,name='profile_update'),
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
@@ -39,6 +43,14 @@ urlpatterns = [
     path("dashboard/", views.user_dashboard, name="dashboard"),
     path("purchases/", views.purchase_list, name="purchases"),
     path("profile/", views.user_profile, name="profile"),
+
+
+
+    path("privacy-policy/", views.privacy_policy, name="privacy_policy"),
+    path("cookie-policy/", views.cookie_policy, name="cookie_policy"),
+    path("disclaimer/", views.disclaimer, name="disclaimer"),
+    path("terms-of-services/", views.terms_of_services, name="terms_of_services"),
+
 
 
 

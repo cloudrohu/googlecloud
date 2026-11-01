@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .terms-conditions-content {
+        color: #475569;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+        word-break: normal;
+    }
+
+    /* Main headings */
+    .terms-conditions-content h1 {
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 800;
+        color: #172033;
+        line-height: 1.25;
+        margin: 40px 0 20px;
+        letter-spacing: -0.8px;
+    }
+
+    .terms-conditions-content h2 {
+        font-size: clamp(22px, 3vw, 30px);
+        font-weight: 750;
+        color: #172033;
+        line-height: 1.35;
+        margin: 38px 0 16px;
+        padding-left: 16px;
+        border-left: 4px solid #c89b2c;
+    }
+
+    .terms-conditions-content h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #273449;
+        margin: 28px 0 12px;
+        line-height: 1.5;
+    }
+
+    .terms-conditions-content h4,
+    .terms-conditions-content h5,
+    .terms-conditions-content h6 {
+        color: #273449;
+        font-weight: 700;
+        margin: 24px 0 10px;
+    }
+
+    /* Paragraphs */
+    .terms-conditions-content p {
+        margin: 0 0 18px;
+        color: #596579;
+    }
+
+    .terms-conditions-content strong,
+    .terms-conditions-content b {
+        color: #263348;
+        font-weight: 700;
+    }
+
+    /* Lists */
+    .terms-conditions-content ul,
+    .terms-conditions-content ol {
+        margin: 18px 0 24px;
+        padding-left: 28px;
+        color: #596579;
+    }
+
+    .terms-conditions-content ul {
+        list-style-type: disc;
+    }
+
+    .terms-conditions-content ol {
+        list-style-type: decimal;
+    }
+
+    .terms-conditions-content li {
+        padding-left: 5px;
+        margin-bottom: 10px;
+    }
+
+    .terms-conditions-content li::marker {
+        color: #c89b2c;
+        font-weight: 700;
+    }
+
+    .terms-conditions-content li > p {
+        margin-bottom: 8px;
+    }
+
+    /* Links */
+    .terms-conditions-content a {
+        color: #a77b13;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        overflow-wrap: anywhere;
+        transition: color .2s ease;
+    }
+
+    .terms-conditions-content a:hover {
+        color: #78570b;
+    }
+
+    /* Images */
+    .terms-conditions-content img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border-radius: 14px;
+        margin: 24px auto;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, .09);
+    }
+
+    /* Tables */
+    .terms-conditions-content table {
+        width: 100%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin: 24px 0;
+        font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .terms-conditions-content th {
+        background: #f5f1e7;
+        color: #273449;
+        font-weight: 700;
+        text-align: left;
+    }
+
+    .terms-conditions-content th,
+    .terms-conditions-content td {
+        border: 1px solid #e5e7eb;
+        padding: 12px 15px;
+        vertical-align: top;
+    }
+
+    .terms-conditions-content tr:nth-child(even) td {
+        background: #fafaf9;
+    }
+
+    /* Blockquote */
+    .terms-conditions-content blockquote {
+        margin: 28px 0;
+        padding: 22px 24px;
+        border-left: 4px solid #c89b2c;
+        border-radius: 0 12px 12px 0;
+        background: #faf7ef;
+        color: #475569;
+        font-size: 16px;
+        font-style: italic;
+    }
+
+    .terms-conditions-content blockquote p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Horizontal line */
+    .terms-conditions-content hr {
+        border: 0;
+        border-top: 1px solid #e5e7eb;
+        margin: 32px 0;
+    }
+
+    /* Alignment */
+    .terms-conditions-content .text-align-center,
+    .terms-conditions-content [style*="text-align: center"] {
+        text-align: center;
+    }
+
+    .terms-conditions-content [style*="text-align: right"] {
+        text-align: right;
+    }
+
+    .terms-conditions-content [style*="text-align: justify"] {
+        text-align: justify;
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+        .terms-conditions-content {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .terms-conditions-content h1 {
+            margin-top: 28px;
+        }
+
+        .terms-conditions-content h2 {
+            margin-top: 30px;
+            padding-left: 12px;
+        }
+
+        .terms-conditions-content h3 {
+            font-size: 18px;
+        }
+
+        .terms-conditions-content table {
+            display: block;
+            overflow-x: auto;
+        }
+
+        .terms-conditions-content th,
+        .terms-conditions-content td {
+            padding: 10px;
+            min-width: 110px;
+        }
+    }
+</style>
+
+<section class="container py-2 sm:py-12">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border border-[#e5e0d6] bg-white p-5 sm:p-8 lg:p-10">
+            <div class="border-b border-[#e5e0d6] pb-6 sm:pb-8">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#b89252] sm:text-xs">Legal</p>
+                <h1 class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                    Terms & Conditions
+                </h1>
+            </div>
+
+            <div class="terms-conditions-content prose prose-sm mt-6 max-w-none text-gray-600 sm:prose-base sm:mt-8">
+                <p>Welcome to our website. By browsing, accessing, or using this site, you agree to comply with and be bound by the following terms and conditions of use. Please read these terms carefully before using our services.</p>
+
+                <blockquote>
+                    <p>If you disagree with any part of these terms and conditions, please refrain from using our website and services.</p>
+                </blockquote>
+
+                <h2>1. Intellectual Property & Use of Site</h2>
+                <p>All content, design elements, graphics, logos, text, and software on this website are owned by or licensed to us. You are granted a limited, non-exclusive, non-transferable license to access the site for personal and non-commercial informational use only.</p>
+                <ul>
+                    <li>You may not reproduce, duplicate, copy, sell, or exploit any portion of the website without express written consent.</li>
+                    <li>Unlawful or unauthorized use of this website may give rise to a claim for damages or be a criminal offense.</li>
+                </ul>
+
+                <h2>2. Property Information & Availability</h2>
+                <p>The information, property listings, pricing, floor plans, and specifications published on this website are provided for reference purposes only:</p>
+                <ul>
+                    <li>Prices, layouts, availability, and project timelines are subject to change without prior notice.</li>
+                    <li>Final purchase terms, allotment letters, and sales agreements shall be governed solely by official contracts executed directly with respective developers or authorized promoters.</li>
+                </ul>
+
+                <h2>3. User Conduct & Responsibilities</h2>
+                <p>When interacting with our website or submitting forms, you agree:</p>
+                <ul>
+                    <li>To provide true, accurate, and current contact details.</li>
+                    <li>Not to use the website to distribute spam, malicious software, or unauthorized advertising.</li>
+                    <li>Not to attempt unauthorized access to our servers, hosting infrastructure, or connected databases.</li>
+                </ul>
+
+                <h2>4. User Communications & Consent</h2>
+                <p>By submitting an inquiry, call request, or contact form on this platform, you expressly authorize us and our partner representatives to contact you via Phone Call, WhatsApp, SMS, or Email to share requested property details, project updates, and offers.</p>
+
+                <h2>5. Third-Party Links & Hosting Infrastructure</h2>
+                <p>Our website may contain links to external third-party sites and operates on third-party cloud infrastructure (including <strong>Google Cloud Platform</strong>). We are not responsible for the availability, terms, or privacy practices of such external sites or third-party service networks.</p>
+
+                <h2>6. Limitation of Liability</h2>
+                <p>Under no circumstances shall we be liable for any direct, indirect, incidental, or consequential loss or damage arising out of your reliance on information provided on this website, technical outages, or site unavailability.</p>
+
+                <h2>7. Governing Law & Jurisdiction</h2>
+                <p>These Terms & Conditions shall be governed by and construed in accordance with the laws of India. Any disputes arising out of or in connection with the use of this website shall be subject to the exclusive jurisdiction of local courts in India.</p>
+
+                <h2>8. Modifications to Terms</h2>
+                <p>We reserve the right to revise or modify these Terms & Conditions at any time without prior notice. Continued use of the website following any changes constitutes acceptance of those revisions.</p>
+
+                <p><strong>Last Updated:</strong> October 2026</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
